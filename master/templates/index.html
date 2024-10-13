@@ -1,0 +1,100 @@
+{% include 'header.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Apload | Анонимный файлообменник</title>
+		<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+	</head>
+	<body>
+		<p class="logo_2">
+			<img src="images/logo.png">
+		</p>
+		<div class="content">
+			<h3 style="margin-top: 0px;">Загружайте свои файлы анонимно</h3>
+			<form id="upload_form" method="POST">
+				<label>
+					Выберите файл:<br>
+					<input type="file" name="file" required>
+				</label>
+				<br>
+				<br>
+				<label>
+					Выберите срок жизни файла:<br>
+					<select name="file_expire" required>
+						{% for unit in file_expire %}
+							<option value={{ unit.expire }}>{{ unit.title }}</option>
+						{% endfor %}
+					</select>
+				</label>
+				<br>
+				<br>
+				<button type="submit">Загрузить файл</button>
+			</form>
+			<div id="link_form" style="display: none;">
+				<br>
+				<br>
+				<p id="message"></p>
+				<div id="link_form_inner" style="display: none;">
+					Ссылка:
+					<a id="link"></a>
+				</div>
+			</div>
+		</div>
+		<script>
+			function serializeForm(formNode) {
+				return new FormData(formNode)
+			}
+
+			async function sendGET(url) {
+				return response = await fetch(url, {
+					method: "GET",
+					headers: {
+						"X-CSRFToken": "{{ csrf_token }}"
+					},
+				})
+			}
+
+			async function sendPOST(url, data) {
+				return response = await fetch(url, {
+					method: "POST",
+					headers: {
+						"X-CSRFToken": "{{ csrf_token }}"
+					},
+					body: data,
+				})
+			}
+
+			async function handleUploadForm(event) {
+				event.preventDefault()
+
+				var lb_response = await sendGET("/load_balancer")
+				var lb_text = await lb_response.text()
+				var host = JSON.parse(lb_text)["best_server"]
+
+				var data = serializeForm(upload_form)
+				var response = await sendPOST("http://" + host + "/upload", data)
+				var response_status = await response.status
+				var response_text = await response.text()
+				var response_data = JSON.parse(response_text)
+
+				if (response_status == 200) {
+					document.getElementById("link_form").style.display = "block";
+					document.getElementById("message").textContent = response_data["message"];
+					document.getElementById("link_form_inner").style.display = "block";
+					document.getElementById("link").href = "http://127.0.0.1:8000/" + response_data["file_code"];
+					document.getElementById("link").textContent = "http://127.0.0.1:8000/" + response_data["file_code"];
+				} else {
+					document.getElementById("link_form").style.display = "block";
+					document.getElementById("message").textContent = response_data["message"];
+					document.getElementById("link_form_inner").style.display = "none";
+				}
+			}
+
+			var upload_form = document.getElementById("upload_form")
+			upload_form.addEventListener("submit", handleUploadForm)
+		</script>
+	</body>
+</html>

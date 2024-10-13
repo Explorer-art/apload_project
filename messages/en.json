@@ -1,0 +1,13 @@
+{
+	"succesfully_upload": "The file has been uploaded successfully",
+	"error_get_only": "GET requests only",
+	"error_post_only": "POST requests only",
+	"error_not_permissions": "You don't have permissions to download this file",
+	"error_file_not_found": "File not found",
+	"error_file_expire_not_available": "The file's lifetime was not found in the available",
+	"error_file_size": "The maximum allowed size of the uploaded file has been exceeded",
+	"error_max_uploads": "The download limit has been exceeded. Wait until the limit is updated",
+	"error_max_uploaded": "The size limit for uploaded files has been exceeded. Wait until the limit is updated",
+	"error_not_disk_space": "There is not enough space on the disk",
+	"eror_not_connection": "I can't connect to the servers"
+}

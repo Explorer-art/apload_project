@@ -1,0 +1,134 @@
+/*================================== MAIN ==================================*/
+
+
+html {
+ box-sizing: border-box;
+}
+
+*,
+*::after,
+*::before {
+ box-sizing: inherit;
+}
+
+/* Убираем стандартное подчёркивание у ссылок */
+a {
+	color: #9900ff;
+ text-decoration: none;
+}
+
+/* Устанавливаем минимальный размер экрана и добавляем фоновое изображение */
+body {
+	margin: 0px;
+	min-height: 100vh;
+ background-repeat: no-repeat;
+ background-position: center center;
+ background-size: cover;
+ background: #293133;
+ font-family: "Montserrat", sans-serif; /* Используем шрифт Montserrat */
+}
+
+
+
+/*================================== HEADER ==================================*/
+
+
+
+/* Стилизуем шапку сайта */
+.header {
+ padding-top: 5px; /* Увеличиваем верхний отступ шапки, чтобы логотип и меню не прилипали к экрану */
+ padding-bottom: 5px;
+ background-color: #212526;
+}
+
+/* Стилизуем внутренний контейнер шапки */
+.header__inner {
+	margin-left: 25px;
+	margin-right: 25px;
+ display: flex; /* Выстраиваем элементы внутри контейнера в строку */
+ justify-content: space-between; /* Распределяем элементы по ширине контейнера */
+ align-items: center; /* Выравниваем элементы по вертикали */
+}
+
+/* Стилизуем логотип */
+.logo {
+ text-transform: uppercase; /* Преобразуем текст в верхний регистр */
+ font-size: 28px; /* Устанавливаем размер шрифта */
+ font-weight: 900; /* Устанавливаем жирное начертание шрифта */
+ color: #ededed; /* Устанавливаем цвет логотипа */
+}
+
+.logo_2 {
+	margin-top: 25px;
+	margin-bottom: 0px;
+	text-align: center;
+}
+
+/* Стилизуем списки меню */
+.menu__list {
+ display: flex; /* Отображаем элементы списка в строку */
+ list-style: none; /* Убираем стандартные маркеры (чёрные точки) */
+}
+
+/* Стилизуем ссылки в меню */
+.menu__list-link {
+ padding: 10px 20px; /* Увеличиваем вертикальный и горизонтальный отступы */
+ position: relative;
+ font-size: 20px; /* Уменьшаем размер шрифта */
+ color: #ededed; /* Устанавливаем цвет ссылок */
+ cursor: pointer; /* Задаём изменение вида курсора при наведении на пункты меню */
+ transition: all 0.1s; /* Добавляем плавное изменение стилей при наведении */
+ position: relative;
+}
+
+.menu__list-link:hover {
+	color: #ffffff;
+}
+
+.menu__list-link::before {
+ content: "";
+ position: absolute;
+ display: block;
+ width: 100%;
+ height: 1px;
+ bottom: 0;
+ left: 0;
+ background-color: #ffffff;
+ transform: scaleX(0);
+ transition: transform 0.3s ease;
+}
+
+.menu__list-link:hover::before {
+ transform: scaleX(1);
+}
+
+
+/*================================== CONTENT ==================================*/
+
+.content {
+	max-width: 100%;
+	margin-top: 35px;
+	margin-bottom: 50px;
+	margin-left: 300px;
+	margin-right: 300px;
+	padding-top: 25px;
+	padding: 25px;
+	color: #ededed;
+	line-height: 20px;
+	border-radius: 10px;
+	background-color: #212526;
+}
+
+.file {
+	text-align: center;
+}
+
+.download_link {
+	color: #ededed;
+	text-decoration: underline;
+}
+
+.thumbnail {
+	width: 500px;
+	margin-bottom: 50px;
+}

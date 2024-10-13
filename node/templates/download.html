@@ -1,0 +1,22 @@
+{% include 'header.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Apload | Анонимный файлообменник</title>
+		<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+	</head>
+	<body>
+		<div class="content">
+			{% for file in files %}
+				<div class="file">
+					<h3><a class="download_link" href={{ file.download_url }}>{{ file.name }}</a></h3>
+					<img class="thumbnail" src={{ file.thumbnail_url }}>
+				</div>
+			{% endfor %}
+			<p style="margin-bottom: 0px;">Создан: {{ created_date }}</p>
+		</div>
+	</body>
+</html>
