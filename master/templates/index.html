@@ -72,7 +72,17 @@
 
 				var lb_response = await sendGET("/load_balancer")
 				var lb_text = await lb_response.text()
-				var host = JSON.parse(lb_text)["best_server"]
+				var data = JSON.parse(lb_text)
+
+				if (lb_response.status == 200) {
+					var host = data["best_server"]
+				} else {
+					document.getElementById("link_form").style.display = "block"
+					document.getElementById("message").textContent = data["message"]
+					document.getElementById("message").style.color = "red"
+					document.getElementById("link_form_inner").style.display = "none"
+					return
+				}
 
 				var data = serializeForm(upload_form)
 				var response = await sendPOST("http://" + host + "/upload", data)
@@ -81,15 +91,16 @@
 				var response_data = JSON.parse(response_text)
 
 				if (response_status == 200) {
-					document.getElementById("link_form").style.display = "block";
-					document.getElementById("message").textContent = response_data["message"];
-					document.getElementById("link_form_inner").style.display = "block";
-					document.getElementById("link").href = "http://127.0.0.1:8000/" + response_data["file_code"];
-					document.getElementById("link").textContent = "http://127.0.0.1:8000/" + response_data["file_code"];
+					document.getElementById("link_form").style.display = "block"
+					document.getElementById("message").textContent = response_data["message"]
+					document.getElementById("link_form_inner").style.display = "block"
+					document.getElementById("link").href = "http://127.0.0.1:8000/" + response_data["file_code"]
+					document.getElementById("link").textContent = "http://127.0.0.1:8000/" + response_data["file_code"]
 				} else {
-					document.getElementById("link_form").style.display = "block";
-					document.getElementById("message").textContent = response_data["message"];
-					document.getElementById("link_form_inner").style.display = "none";
+					document.getElementById("link_form").style.display = "block"
+					document.getElementById("message").textContent = response_data["message"]
+					document.getElementById("message").style.color = "red"
+					document.getElementById("link_form_inner").style.display = "none"
 				}
 			}
 

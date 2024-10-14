@@ -1,5 +1,6 @@
 import os
 import requests
+from functools import lru_cache
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponsePermanentRedirect, JsonResponse
 from django.core.cache import cache
@@ -33,13 +34,10 @@ def images(request, filename):
 
 		return response
 
+@lru_cache(maxsize=1024)
 def search_node(request, file_code):
-	if file_code in cache:
-		url = cache.get(file_code)
-		return HttpResponsePermanentRedirect(url)
-
+	print("Searching...\n")
 	for server in config.SERVERS:
-		print(server)
 		payload = {"password": config.STATUS_PASSWORD, "file_code": file_code}
 
 		try:
@@ -49,8 +47,6 @@ def search_node(request, file_code):
 
 		if response.status_code == 200:
 			url = "http://" + server + "/" + file_code
-
-			cache.set(file_code, url, CACHE_TTL)
 
 			return HttpResponsePermanentRedirect(url)
 		
@@ -83,8 +79,9 @@ def load_balancer(request):
 					"rate": rate
 				}
 
-			return JsonResponse({"success": True, "best_server": best_server["host"]})
+		if best_server == {}:
+			return JsonResponse({"success": False, "message": get_messages("ru")["eror_not_connection"]}, status=500)
 
-		return JsonResponse({"success": False, "message": get_messages("ru")["eror_not_connection"]}, status=500)
+		return JsonResponse({"success": True, "best_server": best_server["host"]})
 	else:
 		return JsonResponse({"success": False, "message": get_messages("ru")["error_get_only"]}, status=403)
