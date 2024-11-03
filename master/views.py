@@ -36,7 +36,6 @@ def images(request, filename):
 
 @lru_cache(maxsize=1024)
 def search_node(request, file_code):
-	print("Searching...\n")
 	for server in config.SERVERS:
 		payload = {"password": config.STATUS_PASSWORD, "file_code": file_code}
 
