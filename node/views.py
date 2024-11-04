@@ -1,4 +1,5 @@
 import os
+import shutil
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.core.files.storage import FileSystemStorage
@@ -8,6 +9,7 @@ from .utils import *
 from .verifier import verify
 from . import config
 
+# Загрузка файла
 @csrf_exempt
 def upload(request):
 	if request.method == "POST":
@@ -29,12 +31,13 @@ def upload(request):
 		fs = FileSystemStorage()
 		name = fs.save(file_code + "/" + file.name.replace(" ", "_"), file)
 
-		add_info(file_code, file_expire)
+		add_data(file_code, file_expire)
 	else:
 		return JsonResponse({"success": False, "message": get_messages("ru")["error_post_only"]}, status=403)
 
 	return JsonResponse({"success": True, "file_code": file_code, "message": get_messages("ru")["succesfully_upload"]})
 
+# Скачивание файла
 def download(request, file_code):
 	if not file_code:
 		return JsonResponse({"success": False, "message": get_messages("ru")["error_file_not_found"]}, status=403)
@@ -75,7 +78,7 @@ def download(request, file_code):
 
 				files_data.append(table)
 
-		context["created_date"] = get_info(file_code)["created"]
+		context["created_date"] = get_data(file_code)["created"]
 		context["files"] = files_data
 
 		return render(request, "download.html", context)
@@ -91,6 +94,7 @@ def download(request, file_code):
 
 			return response
 
+# Поиск файла
 @csrf_exempt
 def search(request):
 	if request.method == "POST":
@@ -100,6 +104,12 @@ def search(request):
 			file_code = json.loads(request.body)["file_code"]
 
 			if os.path.exists("media/" + file_code):
+				data = get_data(file_code)
+
+				if int(time.time()) > data["expiries"]:
+					shutil.rmtree("media/" + file_code)
+					return JsonResponse({"success": False}, status=404)
+
 				return JsonResponse({"success": True})
 			else:
 				return JsonResponse({"success": False}, status=404)
@@ -108,6 +118,7 @@ def search(request):
 	else:
 		return JsonResponse({"success": False, "message": get_messages("ru")["error_post_only"]})
 
+# Статус узла
 @csrf_exempt
 def status(request):
 	if request.method == "POST":

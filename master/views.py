@@ -8,6 +8,7 @@ from django.conf import settings
 from .utils import *
 from . import config
 
+# Домашняя страница
 def home(request):
 	context = {}
 
@@ -15,6 +16,7 @@ def home(request):
 
 	return render(request, "index.html", context)
 
+# Получение изображений для сайта
 def images(request, filename):
 	if not filename:
 		return JsonResponse({"success": False, "message": get_messages("ru")["error_file_not_found"]}, status=403)
@@ -34,6 +36,7 @@ def images(request, filename):
 
 		return response
 
+# Поиск файла по всем узлам
 @lru_cache(maxsize=1024)
 def search_node(request, file_code):
 	for server in config.SERVERS:
@@ -51,6 +54,7 @@ def search_node(request, file_code):
 		
 	return JsonResponse({"success": False, "message": get_messages("ru")["error_file_not_found"]}, status=404)
 
+# Балансировка нагрузки
 def load_balancer(request):
 	if request.method == "GET":
 		best_server = {}

@@ -32,9 +32,10 @@ def get_messages(language):
 
 	return data
 
-def add_info(file_code, expiries):
+def add_data(file_code, expiries):
 	data = {
-		"created": str(datetime.datetime.now().date()),
+		"created_time": int(time.time()),
+		"created_date": str(datetime.datetime.now().date()),
 		"expiries": int(time.time()) + expiries,
 	}
 
@@ -43,7 +44,7 @@ def add_info(file_code, expiries):
 	with open("media/" + file_code + "/info/info.json", "w") as file:
 		json.dump(data, file, indent=4)
 
-def get_info(file_code):
+def get_data(file_code):
 	with open("media/" + file_code + "/info/info.json", "r") as file:
 		data = json.load(file)
 
